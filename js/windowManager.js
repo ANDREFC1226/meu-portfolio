@@ -17,11 +17,11 @@ export class WindowManager {
   open(title, driveUrl) {
     if (this.titleEl) this.titleEl.innerText = title;
     if (this.iframeEl) this.iframeEl.src = driveUrl;
-    if (this.windowEl) this.windowEl.classList.add('open');
+    if (this.windowEl) this.windowEl.classList.add('active');
   }
 
   close() {
-    if (this.windowEl) this.windowEl.classList.remove('open');
+    if (this.windowEl) this.windowEl.classList.remove('active');
     if (this.iframeEl) this.iframeEl.src = 'about:blank';
   }
 }
