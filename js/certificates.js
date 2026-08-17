@@ -1,16 +1,28 @@
 export const certificates = [
   {
-    id: "folder-drive",
-    title: "Pasta de Certificados (Drive)",
-    category: "Drive",
-    driveUrl: "https://drive.google.com/embeddedfolderview?id=1WrZsCIe-VJZgn92JUsf6WE0hVH7rr997#list",
-    icon: "📁"
+    id: 'cert-1',
+    title: 'Python para Análise de Dados',
+    issuer: 'Alura',
+    status: 'disponivel', // disponivel | futuro
+    driveUrl: 'https://drive.google.com/file/d/SEU_ID_AQUI/preview',
+    icon: '📜'
   },
   {
-    id: "cert-1",
-    title: "Certificado 1",
-    category: "Estudos",
-    driveUrl: "https://drive.google.com/file/d/SEU_ID_AQUI/preview",
-    icon: "📜"
+    id: 'cert-2',
+    title: 'Gestão de Projetos Ágeis',
+    issuer: 'FGV',
+    status: 'disponivel',
+    driveUrl: 'https://drive.google.com/file/d/SEU_ID_AQUI_2/preview',
+    icon: '🎓'
+  },
+  {
+    id: 'cert-3',
+    title: 'Inglês Avançado',
+    issuer: 'Cultura Inglesa',
+    status: 'futuro',
+    driveUrl: '',
+    icon: '⏳'
   }
+  // Dica: não precisa mais escrever "category" — o site classifica sozinho.
+  // Só coloque "category: 'Nome Que Eu Quero'" se quiser forçar manualmente.
 ];
