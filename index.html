@@ -15,10 +15,9 @@
   <header class="top-bar">
     <div class="top-bar-left">
       <span class="apple-logo"></span>
-      <span class="app-name">Meu Portfólio</span>
     </div>
     <div class="top-bar-center">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar certificado...">
+      <span id="titleAnimated" class="title-animated">Meu Portfólio</span>
     </div>
     <div class="top-bar-right">
       <span id="statsBar" class="stats-bar"></span>
@@ -30,18 +29,7 @@
 
   <nav class="dock" id="dock"></nav>
 
-  <div class="window-overlay" id="windowOverlay"></div>
-  <div class="mac-window" id="certWindow">
-    <div class="window-header">
-      <div class="traffic-lights">
-        <button class="dot dot-close" id="btnClose" title="Fechar"></button>
-        <button class="dot dot-minimize" title="Minimizar"></button>
-        <button class="dot dot-expand" title="Expandir"></button>
-      </div>
-      <div class="window-title" id="windowTitle">Visualizador de Certificados</div>
-    </div>
-    <iframe class="window-body" id="pdfFrame" src="about:blank" title="Certificado"></iframe>
-  </div>
+  <div id="windowLayer"></div>
 
   <script type="module" src="js/app.js"></script>
 </body>
