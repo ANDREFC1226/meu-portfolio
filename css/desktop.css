@@ -1,5 +1,6 @@
 .desktop {
   padding: 20px;
+  padding-bottom: 110px; /* espaço pra dock não cobrir os últimos ícones */
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -7,6 +8,7 @@
   height: calc(100vh - 28px);
   align-content: flex-start;
 }
+
 .icon {
   width: 90px;
   display: flex;
@@ -16,11 +18,15 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
-  transition: background 0.15s ease;
   position: relative;
+  opacity: 0;
+  transform: translateY(14px) scale(0.9);
+  animation: iconIn 0.45s cubic-bezier(.2,.8,.2,1) forwards;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 .icon:hover {
   background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-3px);
 }
 .icon-img {
   width: 58px;
@@ -32,6 +38,10 @@
   justify-content: center;
   font-size: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: box-shadow 0.2s ease;
+}
+.icon:hover .icon-img {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
 .icon-label {
   color: #ffffff;
@@ -46,7 +56,10 @@
 /* Certificados futuros */
 .icon-locked {
   cursor: not-allowed;
-  opacity: 0.55;
+}
+.icon-locked:hover {
+  transform: translateY(0);
+  background: transparent;
 }
 .icon-locked .icon-img {
   background: rgba(255, 255, 255, 0.4);
@@ -54,8 +67,8 @@
 }
 .icon-badge {
   position: absolute;
-  top: -4px;
-  right: 6px;
+  top: -2px;
+  right: 4px;
   background: #ff9500;
   color: #fff;
   font-size: 9px;
@@ -64,4 +77,14 @@
   border-radius: 8px;
   text-shadow: none;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes iconIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
