@@ -1,117 +1,108 @@
 import { certificates } from './certificates.js';
+import { classify, CATEGORY_META } from './classifier.js';
 import { WindowManager } from './windowManager.js';
+import { initDockMagnify } from './dock.js';
+import { initTitleAnimation } from './titleAnimation.js';
 
-const certWindowManager = new WindowManager('certWindow', 'windowTitle', 'pdfFrame', 'btnClose', 'windowOverlay');
+const windowManager = new WindowManager('windowLayer');
+let activeFilter = 'Todos';
 
-let activeCategory = 'Todos';
-let searchTerm = '';
-
-const categoryIcons = {
-  'Todos': '🖥️'
-};
-const fallbackIcons = ['📂', '🗂️', '📁', '🎯', '🏷️'];
-
-function getCategories() {
-  const cats = ['Todos'];
-  certificates.forEach(c => {
-    if (!cats.includes(c.category)) cats.push(c.category);
-  });
-  return cats;
+function enrichCertificates() {
+  return certificates.map(c => ({ ...c, category: classify(c) }));
 }
 
-function getFilteredCertificates() {
-  return certificates.filter(c => {
-    const matchesCategory = activeCategory === 'Todos' || c.category === activeCategory;
-    const matchesSearch = c.title.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
+function groupByCategory(list) {
+  const groups = {};
+  list.forEach(c => {
+    if (!groups[c.category]) groups[c.category] = [];
+    groups[c.category].push(c);
   });
+  return groups;
 }
 
-function renderDesktopIcons() {
+function renderDesktop() {
   const desktopEl = document.getElementById('desktop');
-  if (!desktopEl) return;
-
   desktopEl.innerHTML = '';
-  const filtered = getFilteredCertificates();
+  const groups = groupByCategory(enrichCertificates());
+  const categories = Object.keys(groups).sort();
+  let iconIndex = 0;
 
-  filtered.forEach((cert, index) => {
-    const isFuturo = cert.status === 'futuro';
-    const iconEl = document.createElement('div');
-    iconEl.className = `icon${isFuturo ? ' icon-locked' : ''}`;
-    iconEl.style.animationDelay = `${index * 60}ms`;
-    iconEl.setAttribute('data-id', cert.id);
+  categories.forEach(cat => {
+    if (activeFilter !== 'Todos' && activeFilter !== cat) return;
 
-    iconEl.innerHTML = `
-      <div class="icon-img">${cert.icon}</div>
-      <div class="icon-label">${cert.title}</div>
-      ${isFuturo ? '<div class="icon-badge">Em breve</div>' : ''}
-    `;
+    const groupEl = document.createElement('section');
+    groupEl.className = 'category-group';
+    groupEl.innerHTML = `<h2 class="category-header">${CATEGORY_META[cat]?.icon || '📁'} ${cat} <span class="category-count">${groups[cat].length}</span></h2>`;
 
-    iconEl.addEventListener('click', () => {
-      if (isFuturo) return;
-      certWindowManager.open(cert.title, cert.driveUrl);
+    const rowEl = document.createElement('div');
+    rowEl.className = 'category-row';
+
+    groups[cat].forEach(cert => {
+      const isFuturo = cert.status === 'futuro';
+      const iconEl = document.createElement('div');
+      iconEl.className = `icon${isFuturo ? ' icon-locked' : ''}`;
+      iconEl.style.animationDelay = `${iconIndex * 55}ms`;
+      iconIndex++;
+
+      iconEl.innerHTML = `
+        <div class="icon-img">${cert.icon}</div>
+        <div class="icon-label">${cert.title}</div>
+        ${isFuturo ? '<div class="icon-badge">Em breve</div>' : ''}
+      `;
+
+      iconEl.addEventListener('click', () => {
+        if (isFuturo) return;
+        windowManager.open(cert);
+      });
+
+      rowEl.appendChild(iconEl);
     });
 
-    desktopEl.appendChild(iconEl);
+    groupEl.appendChild(rowEl);
+    desktopEl.appendChild(groupEl);
   });
 
-  if (filtered.length === 0) {
-    desktopEl.innerHTML = `<p style="color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.8); padding-top:20px;">Nenhum certificado encontrado.</p>`;
+  if (!desktopEl.innerHTML) {
+    desktopEl.innerHTML = `<p class="empty-state">Nenhum certificado nessa categoria ainda.</p>`;
   }
 }
 
 function renderDock() {
   const dockEl = document.getElementById('dock');
-  if (!dockEl) return;
-
   dockEl.innerHTML = '';
-  const categories = getCategories();
+  const cats = ['Todos', ...new Set(enrichCertificates().map(c => c.category))];
 
-  categories.forEach((cat, index) => {
-    const icon = categoryIcons[cat] || fallbackIcons[index % fallbackIcons.length];
+  cats.forEach(cat => {
+    const icon = cat === 'Todos' ? '🖥️' : (CATEGORY_META[cat]?.icon || '📁');
     const item = document.createElement('div');
-    item.className = `dock-item${cat === activeCategory ? ' active' : ''}`;
-    item.innerHTML = `${icon}<span class="dock-tooltip">${cat}</span>`;
-
+    item.className = `dock-item${cat === activeFilter ? ' active' : ''}`;
+    item.innerHTML = `<span class="dock-icon">${icon}</span><span class="dock-tooltip">${cat}</span>`;
     item.addEventListener('click', () => {
-      activeCategory = cat;
+      activeFilter = cat;
       renderDock();
-      renderDesktopIcons();
+      renderDesktop();
     });
-
     dockEl.appendChild(item);
   });
+
+  initDockMagnify(dockEl);
 }
 
 function renderStats() {
   const statsEl = document.getElementById('statsBar');
   if (!statsEl) return;
-
-  const disponiveis = certificates.filter(c => c.status !== 'futuro').length;
-  const futuros = certificates.filter(c => c.status === 'futuro').length;
-
+  const list = enrichCertificates();
+  const disponiveis = list.filter(c => c.status !== 'futuro').length;
+  const futuros = list.filter(c => c.status === 'futuro').length;
   statsEl.innerText = `🎓 ${disponiveis} conquistados  •  ⏳ ${futuros} a caminho`;
-}
-
-function initSearch() {
-  const searchEl = document.getElementById('searchInput');
-  if (!searchEl) return;
-
-  searchEl.addEventListener('input', (e) => {
-    searchTerm = e.target.value;
-    renderDesktopIcons();
-  });
 }
 
 function initClock() {
   const clockEl = document.getElementById('clock');
   if (!clockEl) return;
-
   function update() {
     const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    clockEl.innerText = `${hours}:${minutes}`;
+    clockEl.innerText = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   }
   setInterval(update, 1000);
   update();
@@ -119,8 +110,8 @@ function initClock() {
 
 document.addEventListener('DOMContentLoaded', () => {
   renderDock();
-  renderDesktopIcons();
+  renderDesktop();
   renderStats();
-  initSearch();
   initClock();
+  initTitleAnimation('titleAnimated', ['Meu Portfólio', 'Minhas Conquistas', 'Sempre Evoluindo']);
 });
