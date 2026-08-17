@@ -1,5 +1,5 @@
 .top-bar {
-  height: 28px;
+  height: 32px;
   background: rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -24,25 +24,14 @@
   justify-content: center;
 }
 .top-bar-left .apple-logo { font-size: 15px; }
-.top-bar-left .app-name { font-weight: 600; }
 
-.search-input {
-  background: rgba(255, 255, 255, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 6px;
-  padding: 3px 10px;
-  font-size: 12px;
-  color: #ffffff;
-  outline: none;
-  width: 220px;
-  transition: background 0.2s ease, width 0.2s ease;
-}
-.search-input::placeholder {
-  color: rgba(255, 255, 255, 0.75);
-}
-.search-input:focus {
-  background: rgba(255, 255, 255, 0.4);
-  width: 260px;
+.title-animated {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  min-width: 160px;
+  text-align: center;
 }
 
 .stats-bar {
