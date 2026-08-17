@@ -1,8 +1,10 @@
 import { certificates } from './certificates.js';
 import { WindowManager } from './windowManager.js';
 
+// Instancia o gerenciador de janelas conectando com os IDs do HTML
 const certWindowManager = new WindowManager('certWindow', 'windowTitle', 'pdfFrame', 'btnClose');
 
+// Renderiza os ícones dos certificados na área de trabalho
 function renderDesktopIcons() {
   const desktopEl = document.getElementById('desktop');
   if (!desktopEl) return;
@@ -19,6 +21,7 @@ function renderDesktopIcons() {
       <div class="icon-label">${cert.title}</div>
     `;
 
+    // Ação do clique para abrir a janela macOS
     iconEl.addEventListener('click', () => {
       certWindowManager.open(cert.title, cert.driveUrl);
     });
@@ -27,6 +30,7 @@ function renderDesktopIcons() {
   });
 }
 
+// Atualiza o relógio no canto superior direito
 function initClock() {
   const clockEl = document.getElementById('clock');
   if (!clockEl) return;
@@ -42,6 +46,7 @@ function initClock() {
   update();
 }
 
+// Inicializa a aplicação
 document.addEventListener('DOMContentLoaded', () => {
   renderDesktopIcons();
   initClock();
