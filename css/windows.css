@@ -1,22 +1,5 @@
-.window-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(2px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-  z-index: 900;
-}
-.window-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
 .mac-window {
   position: fixed;
-  top: 50%;
-  left: 50%;
   width: 800px;
   max-width: 90vw;
   height: 550px;
@@ -25,21 +8,29 @@
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-radius: 12px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.4);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  z-index: 1000;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s ease;
+  pointer-events: none;
+}
+.mac-window.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+.mac-window.focused { box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5); }
+.mac-window.maximized {
+  top: 34px !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: calc(100vh - 34px) !important;
+  border-radius: 0;
+}
+.mac-window.minimized {
+  transform: scale(0.05) translateY(600px);
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, -46%) scale(0.92);
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(.2,.8,.2,1);
-}
-.mac-window.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translate(-50%, -50%) scale(1);
 }
 
 .window-header {
@@ -50,35 +41,16 @@
   padding: 0 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
+  cursor: move;
 }
-.traffic-lights {
-  display: flex;
-  gap: 8px;
-}
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
+.traffic-lights { display: flex; gap: 8px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.15s ease; }
 .dot:hover { transform: scale(1.15); }
 .dot-close { background: #ff5f56; border: 0.5px solid #e0443e; }
 .dot-minimize { background: #ffbd2e; border: 0.5px solid #dea123; }
 .dot-expand { background: #27c93f; border: 0.5px solid #1aab29; }
 .window-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 13px;
-  font-weight: 600;
-  color: #333333;
+  position: absolute; left: 50%; transform: translateX(-50%);
+  font-size: 13px; font-weight: 600; color: #333333;
 }
-.window-body {
-  flex: 1;
-  width: 100%;
-  height: calc(100% - 38px);
-  border: none;
-  background: #ffffff;
-}
+.window-body { flex: 1; width: 100%; height: calc(100% - 38px); border: none; background: #ffffff; }
