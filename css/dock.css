@@ -14,7 +14,6 @@
   border: 1px solid rgba(255, 255, 255, 0.35);
   z-index: 500;
 }
-
 .dock-item {
   width: 52px;
   height: 52px;
@@ -27,31 +26,22 @@
   cursor: pointer;
   position: relative;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s ease;
+  transform-origin: bottom center;
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease;
 }
-.dock-item:hover {
-  transform: translateY(-10px) scale(1.15);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
-}
-.dock-item.active {
-  box-shadow: 0 0 0 2px #fff, 0 6px 14px rgba(0, 0, 0, 0.3);
-}
+.dock-item.active { box-shadow: 0 0 0 2px #fff, 0 6px 14px rgba(0, 0, 0, 0.3); }
 .dock-item.active::after {
   content: '';
   position: absolute;
-  bottom: -9px;
-  left: 50%;
+  bottom: -9px; left: 50%;
   transform: translateX(-50%);
-  width: 5px;
-  height: 5px;
+  width: 5px; height: 5px;
   border-radius: 50%;
   background: #fff;
 }
-
 .dock-tooltip {
   position: absolute;
-  bottom: 62px;
-  left: 50%;
+  bottom: 62px; left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
@@ -63,6 +53,4 @@
   pointer-events: none;
   transition: opacity 0.15s ease;
 }
-.dock-item:hover .dock-tooltip {
-  opacity: 1;
-}
+.dock-item:hover .dock-tooltip { opacity: 1; }
